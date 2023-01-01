@@ -13,33 +13,28 @@
   <p style="word-break: break-all;">loading...</p>
   <button style="display:none;" onclick="copy()">copy</button>
   <a style="display:none;" href="javascript:location.reload();">reload</a>
+  <textarea id="t">loading...</textarea>
   <script>
 
-    var t = ""
 
     fetch("/api/test")
       .then((rsp) => rsp.text())
       .then((res) => (document.querySelector("span").innerHTML = res));
 
-
+    var t = document.querySelector('t')
 
     fetch("/api/get").then(rsp => rsp.text()).then(res => {
-      document.querySelector("p").innerHTML = res
-      t = res
+      t.innerHTML = res
       document.querySelector('button').style.display = 'block'
     }).catch(() => {
-      document.querySelector("p").style.display = 'none'
+      t.innerHTML = 'failed';
       document.querySelector('a').style.display = 'block'
     })
 
 
     function copy() {
-      const input = document.createElement('textarea');
-      document.body.appendChild(input);
-      input.setAttribute('value', t);
-      input.select();
+      t.select();
       document.execCommand('copy');
-      document.body.removeChild(input);
     }
 
 
