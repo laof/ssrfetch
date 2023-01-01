@@ -16,23 +16,6 @@ var port = ":7965"
 
 func main() {
 
-	fmt.Println(local())
-
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-
-	// 	url := r.URL.RequestURI()
-
-	// 	switch url {
-	// 	case "/api/get":
-	// 		w.Write([]byte(online()))
-	// 	case "/api/test":
-	// 		w.Write([]byte(local()))
-	// 	default:
-	// 		w.Write([]byte("hello world"))
-	// 	}
-
-	// })
-
 	http.HandleFunc("/api/get", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(online()))
 	})
