@@ -51,7 +51,7 @@ func parse(html string) string {
 		nodes = append(nodes, sstxt...)
 
 	}
-	return strings.Join(nodes, ",")
+	return strings.Join(nodes, "\n")
 }
 
 func online() string {
