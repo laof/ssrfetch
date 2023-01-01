@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"strings"
 
+	tool "fetch"
+
 	"github.com/apex/gateway/v2"
 )
 
@@ -38,7 +40,7 @@ func main() {
 	})
 
 	fmt.Println("http://localhost" + port)
-	gateway.ListenAndServe(port, nil)
+	gateway.ListenAndServe("n/a", nil)
 
 }
 
@@ -68,8 +70,8 @@ func parse(html string) string {
 }
 
 func online() string {
-	res, err := http.Get(host)
-	fmt.Println(host)
+	res, err := http.Get(tool.Host)
+	fmt.Println(tool.Host)
 	if err != nil {
 		return ""
 	}
