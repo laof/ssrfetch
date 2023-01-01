@@ -20,7 +20,7 @@
       .then((rsp) => rsp.text())
       .then((res) => (document.querySelector("span").innerHTML = res));
 
-    var t = document.querySelector('t')
+    var t = document.getElementById('t')
 
     fetch("/api/get").then(rsp => rsp.text()).then(res => {
       t.innerHTML = res
