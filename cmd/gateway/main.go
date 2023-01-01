@@ -31,11 +31,11 @@ func main() {
 
 	// })
 
-	http.HandleFunc("api/get", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/api/get", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(online()))
 	})
 
-	http.HandleFunc("api/test", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/api/test", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(local()))
 	})
 
