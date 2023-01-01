@@ -84,6 +84,6 @@ func online() string {
 }
 
 func local() string {
-	txt, _ := ioutil.ReadFile("test.html")
+	txt, _ := ioutil.ReadFile("static/test.html")
 	return parse(string(txt))
 }
