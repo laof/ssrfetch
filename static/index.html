@@ -9,7 +9,9 @@
   <body>
     <p>test go</p>
     <script>
-      await fetch("/api/test").then((rsp) => rsp.json());
+      (async () => {
+        await fetch("/api/test").then((rsp) => rsp.json());
+      })();
     </script>
   </body>
 </html>
