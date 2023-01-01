@@ -9,19 +9,11 @@
 </head>
 
 <body>
-  <h3>ssrfetch: <span></span></h3>
   <textarea id="t" readonly>loading...</textarea> <br>
   <button style="display:none;" onclick="copy()">copy</button>
   <a style="display:none;" href="javascript:location.reload();">reload</a>
   <script>
-
-
-    fetch("/api/test")
-      .then((rsp) => rsp.text())
-      .then((res) => (document.querySelector("span").innerHTML = res));
-
     var t = document.getElementById('t')
-
     fetch("/api/get").then(rsp => rsp.text()).then(res => {
       t.innerHTML = res
       document.querySelector('button').style.display = 'block'
@@ -30,13 +22,10 @@
       document.querySelector('a').style.display = 'block'
     })
 
-
     function copy() {
       t.select();
       document.execCommand('copy');
     }
-
-
   </script>
 </body>
 
