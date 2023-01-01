@@ -16,6 +16,8 @@ var port = ":7965"
 
 func main() {
 
+	fmt.Println(local())
+
 	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
 	// 	url := r.URL.RequestURI()
@@ -82,6 +84,6 @@ func online() string {
 }
 
 func local() string {
-	txt, _ := ioutil.ReadFile("./test.html")
+	txt, _ := ioutil.ReadFile("test.html")
 	return parse(string(txt))
 }
