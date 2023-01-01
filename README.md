@@ -1,4 +1,4 @@
-test
+ssrfetch
 
 git update-index --chmod=+x stackbit-build.sh
 
