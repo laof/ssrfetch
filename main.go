@@ -6,10 +6,40 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+
+	"github.com/apex/gateway/v2"
 )
 
+var port = ":7965"
+
 func main() {
-	fmt.Println(online())
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
+		url := r.URL.RequestURI()
+
+		switch url {
+		case "/api/get":
+			w.Write([]byte(online()))
+		case "/api/test":
+			w.Write([]byte(local()))
+		default:
+			w.Write([]byte("hello world"))
+		}
+
+	})
+
+	http.HandleFunc("api/get", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(online()))
+	})
+
+	http.HandleFunc("api/test", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(local()))
+	})
+
+	fmt.Println("http://localhost" + port)
+	gateway.ListenAndServe(port, nil)
+
 }
 
 func parse(html string) string {
