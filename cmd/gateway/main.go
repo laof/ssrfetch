@@ -21,7 +21,7 @@ func main() {
 	})
 
 	http.HandleFunc("/api/test", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(local()))
+		w.Write([]byte("I am ok"))
 	})
 
 	fmt.Println("http://localhost" + port)
@@ -67,6 +67,6 @@ func online() string {
 }
 
 func local() string {
-	txt, _ := ioutil.ReadFile("static/test.html")
+	txt, _ := ioutil.ReadFile("test.html")
 	return parse(string(txt))
 }
