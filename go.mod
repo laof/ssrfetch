@@ -2,7 +2,7 @@ module fetch
 
 go 1.18
 
-require github.com/apex/gateway/v2 v2.0.0
+require github.com/apex/gateway v1.1.2
 
 require (
 	github.com/aws/aws-lambda-go v1.17.0 // indirect
