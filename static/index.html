@@ -1,18 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ssrfetch</title>
-  </head>
-  <body>
-    <h3>ssrfetch</h3>
-    <p></p>
-    <script>
-      fetch("/api/test")
-        .then((rsp) => rsp.text())
-        .then((res) => (document.querySelector("p").innerHTML = res));
-    </script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ssrfetch</title>
+</head>
+
+<body>
+  <h3>ssrfetch: <span></span></h3>
+  <p>loading...</p>
+  <button style="display:none;" onclick="copy()">copy</button>
+  <a style="display:none;" href="javascript:location.reload();">reload</a>
+  <script>
+
+    var t = ""
+
+    fetch("/api/test")
+      .then((rsp) => rsp.text())
+      .then((res) => (document.querySelector("span").innerHTML = res));
+
+
+
+    fetch("/api/get").then(rsp => rsp.text()).then(res => {
+      document.querySelector("p").innerHTML = res
+      t = res
+      document.querySelector('button').style.display = 'block'
+    }).catch(() => {
+      document.querySelector("p").style.display = 'none'
+      document.querySelector('a').style.display = 'block'
+    })
+
+
+    function copy() {
+      const input = document.createElement('input');
+      document.body.appendChild(input);
+      input.setAttribute('value', t);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+
+
+  </script>
+</body>
+
 </html>
