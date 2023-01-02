@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	tool "fetch"
-
 	"github.com/apex/gateway"
 )
 
@@ -64,8 +62,8 @@ func parse(html string) string {
 }
 
 func online() string {
-	res, err := http.Get(tool.Host)
-	fmt.Println(tool.Host)
+	res, err := http.Get(Host)
+	fmt.Println(Host)
 	if err != nil {
 		return ""
 	}
