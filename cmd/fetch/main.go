@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apex/gateway"
+	"github.com/apex/gateway/v2"
 )
 
 var port = flag.Int("port", -1, "specify a port")
