@@ -1,6 +1,7 @@
 package main
 
 import (
+	tool "fetch"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -62,8 +63,8 @@ func parse(html string) string {
 }
 
 func online() string {
-	res, err := http.Get(Host)
-	fmt.Println(Host)
+	res, err := http.Get(tool.Host)
+	fmt.Println(tool.Host)
 	if err != nil {
 		return ""
 	}
