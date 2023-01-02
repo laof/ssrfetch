@@ -9,8 +9,8 @@
 </head>
 
 <body>
-  <textarea id="t" readonly>loading...</textarea> <br>
-  <input type="button" id="b1" style="display:none;" onclick="copy()" value="copy"> &nbsp;&nbsp;&nbsp; <input type="button" value="view" id="b2" style="display:none;" onclick="view()">
+  <textarea onclick="view()" id="t" readonly>loading...</textarea> <br><br>
+  <button type="button" style="display:none;" onclick="copy()" >copy</button>
   <a style="display:none;" href="javascript:location.reload();">reload</a>
   <script>
     var t = document.getElementById('t')
