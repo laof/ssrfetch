@@ -1,10 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	tool "fetch"
@@ -12,9 +14,10 @@ import (
 	"github.com/apex/gateway"
 )
 
-var port = ":7965"
+var port = flag.Int("port", -1, "specify a port")
 
 func main() {
+	fmt.Println(*port)
 
 	http.HandleFunc("/api/get", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(online()))
@@ -24,8 +27,14 @@ func main() {
 		w.Write([]byte("I am ok"))
 	})
 
-	fmt.Println("http://localhost" + port)
-	gateway.ListenAndServe("n/a", nil)
+	if *port == -1 {
+		fmt.Println("aws-lambda-go")
+		gateway.ListenAndServe("n/a", nil)
+	} else {
+		sp := ":" + strconv.Itoa(*port)
+		fmt.Println("http://localhost" + sp)
+		http.ListenAndServe(sp, nil)
+	}
 
 }
 

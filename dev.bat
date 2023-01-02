@@ -1,2 +1,2 @@
 go build
-fetch.exe
+fetch.exe -port 5872
