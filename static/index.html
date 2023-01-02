@@ -10,13 +10,14 @@
 
 <body>
   <textarea id="t" readonly>loading...</textarea> <br>
-  <button style="display:none;" onclick="copy()">copy</button>
+  <button id="b1" style="display:none;" onclick="copy()">copy</button> &nbsp;&nbsp;&nbsp; <button id="b2" style="display:none;" onclick="view()">view</button>
   <a style="display:none;" href="javascript:location.reload();">reload</a>
   <script>
     var t = document.getElementById('t')
     fetch("/api/get").then(rsp => rsp.text()).then(res => {
       t.innerHTML = res
-      document.querySelector('button').style.display = 'block'
+      document.getElementById('b1').style.display = 'block'
+      document.getElementById('b2').style.display = 'block'
     }).catch(() => {
       t.innerHTML = 'failed';
       document.querySelector('a').style.display = 'block'
@@ -25,6 +26,10 @@
     function copy() {
       t.select();
       document.execCommand('copy');
+    }
+
+    function view(){
+      alert(t.innerHTML)
     }
   </script>
 </body>
