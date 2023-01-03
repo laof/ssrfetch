@@ -34,7 +34,7 @@ func main() {
 
 		req, err := http.Get(str)
 		if err != nil {
-			w.Write([]byte("Get failed"))
+			w.Write([]byte("Get failed: " + str))
 			return
 		}
 		defer req.Body.Close()
