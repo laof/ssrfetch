@@ -29,6 +29,26 @@ func main() {
 
 	flag.Parse()
 
+	http.HandleFunc("/api/goto", func(w http.ResponseWriter, r *http.Request) {
+		str := strings.Replace(r.RequestURI, "/api/goto?s=", "", 1)
+
+		req, err := http.Get(str)
+		if err != nil {
+			w.Write([]byte("Get failed"))
+			return
+		}
+		defer req.Body.Close()
+		data, err := ioutil.ReadAll(req.Body)
+
+		if err != nil {
+			w.Write([]byte("ReadAll failed"))
+			return
+		}
+
+		w.Write(data)
+
+	})
+
 	http.HandleFunc("/api/get", func(w http.ResponseWriter, r *http.Request) {
 		s := gets(r)
 		w.Write([]byte(online(s)))
