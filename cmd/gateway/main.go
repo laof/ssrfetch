@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -31,6 +32,10 @@ func main() {
 
 	http.HandleFunc("/api/goto", func(w http.ResponseWriter, r *http.Request) {
 		str := strings.Replace(r.RequestURI, "/api/goto?s=", "", 1)
+
+		if str != "" {
+			str, _ = url.QueryUnescape(str)
+		}
 
 		req, err := http.Get(str)
 		if err != nil {
