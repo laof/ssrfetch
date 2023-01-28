@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"sync"
 
 	"github.com/apex/gateway"
 )
@@ -57,8 +56,8 @@ func main() {
 
 	http.HandleFunc("/api/get", func(w http.ResponseWriter, r *http.Request) {
 		s := gets(r)
-
-		w.Write([]byte(node(s)))
+		data := online()
+		w.Write([]byte(strings.Join(data, s)))
 	})
 
 	http.HandleFunc("/api/test", func(w http.ResponseWriter, r *http.Request) {
@@ -77,27 +76,27 @@ func main() {
 
 }
 
-func node(s string) string {
+// func node(s string) string {
 
-	var sw sync.WaitGroup
-	var nodes []string
-	sw.Add(2)
+// 	var sw sync.WaitGroup
+// 	var nodes []string
+// 	sw.Add(2)
 
-	go func() {
-		nodes = append(nodes, online()...)
-		sw.Done()
-	}()
+// 	go func() {
+// 		nodes = append(nodes, online()...)
+// 		sw.Done()
+// 	}()
 
-	go func() {
-		nodes = append(nodes, fei()...)
-		sw.Done()
-	}()
+// 	go func() {
+// 		nodes = append(nodes, fei()...)
+// 		sw.Done()
+// 	}()
 
-	sw.Wait()
+// 	sw.Wait()
 
-	return strings.Join(nodes, s)
+// 	return strings.Join(nodes, s)
 
-}
+// }
 
 func parse(html string) []string {
 
