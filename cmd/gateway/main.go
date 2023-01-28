@@ -4,11 +4,12 @@ import (
 	tool "fetch"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/apex/gateway"
 )
@@ -43,7 +44,7 @@ func main() {
 			return
 		}
 		defer req.Body.Close()
-		data, err := ioutil.ReadAll(req.Body)
+		data, err := io.ReadAll(req.Body)
 
 		if err != nil {
 			w.Write([]byte("ReadAll failed"))
@@ -56,7 +57,8 @@ func main() {
 
 	http.HandleFunc("/api/get", func(w http.ResponseWriter, r *http.Request) {
 		s := gets(r)
-		w.Write([]byte(online(s)))
+
+		w.Write([]byte(node(s)))
 	})
 
 	http.HandleFunc("/api/test", func(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +77,29 @@ func main() {
 
 }
 
-func parse(html, s string) string {
+func node(s string) string {
+
+	var sw sync.WaitGroup
+	var nodes []string
+	sw.Add(2)
+
+	go func() {
+		nodes = append(nodes, online()...)
+		sw.Done()
+	}()
+
+	go func() {
+		nodes = append(nodes, fei()...)
+		sw.Done()
+	}()
+
+	sw.Wait()
+
+	return strings.Join(nodes, s)
+
+}
+
+func parse(html string) []string {
 
 	p := regexp.MustCompile(`<p>(.*)?</p>`)
 
@@ -87,33 +111,77 @@ func parse(html, s string) string {
 	// ss
 	ss := regexp.MustCompile(`ss://([^<]*)`)
 
-	var nodes []string
+	var data []string
 	for _, p := range target {
 
 		ssrtxt := ssr.FindAllString(p, -1)
-		nodes = append(nodes, ssrtxt...)
+		data = append(data, ssrtxt...)
 
 		sstxt := ss.FindAllString(p, -1)
-		nodes = append(nodes, sstxt...)
+		data = append(data, sstxt...)
 
 	}
 
-	return strings.Join(nodes, s)
+	return data
 }
 
-func online(s string) string {
-	res, err := http.Get(tool.Host)
+func online() []string {
+	res, err := httpRequest(tool.Host)
 	fmt.Println(tool.Host)
 	if err != nil {
-		return ""
+		return make([]string, 0)
 	}
 	defer res.Body.Close()
 
-	str, _ := ioutil.ReadAll(res.Body)
-	return parse(string(str), s)
+	str, _ := io.ReadAll(res.Body)
+	return parse(string(str))
 }
 
-func local(s string) string {
-	txt, _ := ioutil.ReadFile("test.html")
-	return parse(string(txt), s)
+// func local() []string {
+// 	txt, _ := os.ReadFile("test.html")
+// 	return parse(string(txt))
+// }
+
+func fei() []string {
+
+	var data []string
+
+	req, err := httpRequest("https://www.zhi" + "mian" + "fei.com")
+	if err != nil {
+		return data
+	}
+	defer req.Body.Close()
+	html, err := io.ReadAll(req.Body)
+
+	if err != nil {
+		return data
+	}
+
+	exp2 := regexp.MustCompile(`data-clipboard-text=".*?"`)
+	str := exp2.FindAllString(string(html), -1)
+	for _, v := range str {
+		ssr := strings.Replace(v, `data-clipboard-text="`, "", 1)
+		ssr = strings.Replace(ssr, `"`, "", 1)
+		data = append(data, ssr)
+	}
+
+	return data
+
+}
+
+func httpRequest(url string) (*http.Response, error) {
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	// 设置请求頭
+	request.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
+	request.Header.Add("Accept-Language", "zh-CN,zh;q=0.9")
+	request.Header.Add("Connection", "keep-alive")
+	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36")
+
+	client := http.Client{}
+	// Do sends an HTTP request and returns an HTTP response
+	// 发起一个HTTP请求，返回一个HTTP响应
+	return client.Do(request)
 }
