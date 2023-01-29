@@ -27,8 +27,8 @@ jobs:
         uses: tj-actions/docker-cp@v2
         with:
           container: ${{ steps.puppeteer-test.outputs.container-id }}
-          source: ${{ steps.puppeteer-test.outputs.home }}/test.pdf
-          destination: test/test.pdf
+          source: ${{ steps.puppeteer-test.outputs.home }}/test.txt
+          destination: test/test.txt
 
       - name: Submit pdf
         uses: JamesIves/github-pages-deploy-action@v4.3.3
