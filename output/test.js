@@ -1,11 +1,11 @@
 const puppeteer = require("puppeteer");
-const { resolve, join } = require("path");
+const fs = require("fs");
 
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto("https://www.baidu.com");
-  await page.pdf({ path: "test.pdf", format: "a4" });
-  //   await page.pdf({ path: "/test/test3.pdf", format: "a4" });
+  await page.goto("https://lncn.org/api/ssr-list");
+  const html = await page.content();
+  fs.writeFileSync("test.txt", html);
   await browser.close();
 })();
