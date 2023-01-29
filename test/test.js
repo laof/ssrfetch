@@ -8,6 +8,12 @@ const fs = require("fs");
     timeout: 1000 * 30,
     waitUntil: "networkidle0",
   });
+
+  await page.reload({
+    timeout: 1000 * 30,
+    waitUntil: "networkidle0",
+  });
+
   //   await page.waitForSelector(".ssr-btn-bar button");
   //   const html = await page.content();
   //   fs.writeFileSync("test.txt", html);
