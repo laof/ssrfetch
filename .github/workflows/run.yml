@@ -27,7 +27,6 @@ jobs:
       - name: Copy test output
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
-          folder: output
           target-folder: test
           clean: true
           branch: main
