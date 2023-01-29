@@ -30,4 +30,5 @@ jobs:
           folder: output
           target-folder: test
           clean: true
+          branch: main
           commit-message: ok
