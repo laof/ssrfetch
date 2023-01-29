@@ -2,9 +2,12 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: false, //有浏览器界面启动
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
   const page = await browser.newPage();
-  await page.goto("https://lncn.org/api/ssr-list", {
+  await page.goto("https://lncn.org", {
     timeout: 1000 * 30,
     waitUntil: "networkidle0",
   });
