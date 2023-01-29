@@ -5,6 +5,6 @@ const puppeteer = require("puppeteer");
   const page = await browser.newPage();
   await page.goto("https://www.baidu.com");
   await page.pdf({ path: "./test/test.pdf", format: "a4" });
-  await page.pdf({ path: "/test/test3.pdf", format: "a4" });
+//   await page.pdf({ path: "/test/test3.pdf", format: "a4" });
   await browser.close();
 })();
