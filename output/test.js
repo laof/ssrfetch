@@ -1,9 +1,20 @@
 const puppeteer = require("puppeteer");
+const { resolve } = require("path");
 
+console.log(444444, __dirname);
 
-console.log(__dirname);
+console.log(66, __filename);
 
-console.log(__filename);
+// 返回运行文件所在的目录
+console.log("__dirname : " + __dirname);
+// __dirname : /Desktop
+
+// 当前命令所在的目录
+console.log("resolve   : " + resolve("./"));
+// resolve   : /workspace
+
+// 当前命令所在的目录
+console.log("cwd       : " + process.cwd());
 
 (async () => {
   const browser = await puppeteer.launch();
