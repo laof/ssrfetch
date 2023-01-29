@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { resolve } = require("path");
+const { resolve, join } = require("path");
 
 console.log(444444, __dirname);
 
@@ -20,7 +20,7 @@ console.log("cwd       : " + process.cwd());
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto("https://www.baidu.com");
-  await page.pdf({ path: "test/test.pdf", format: "a4" });
+  await page.pdf({ path: join(__dirname, "test.pdf"), format: "a4" });
   //   await page.pdf({ path: "/test/test3.pdf", format: "a4" });
   await browser.close();
 })();
