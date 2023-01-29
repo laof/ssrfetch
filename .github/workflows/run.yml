@@ -17,14 +17,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.3.0
 
-      - name: Run test
+      - name: Create pdf
         uses: tj-actions/puppeteer@v4
         id: puppeteer
         with:
           files: |
             test/test.js
 
-      - name: Copy test output
+      - name: Copy pdf
+        uses: tj-actions/docker-cp@v2
+        with:
+          container: ${{ steps.puppeteer-test.outputs.container-id }}
+          source: ${{ steps.puppeteer-test.outputs.home }}/test.pdf
+          destination: test.pdf
+
+      - name: Submit pdf
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           folder: test
