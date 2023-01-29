@@ -1,16 +1,19 @@
 package main
 
 import (
+	"context"
 	tool "fetch"
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
 
 	"github.com/apex/gateway"
+	"github.com/chromedp/chromedp"
 )
 
 func gets(r *http.Request) string {
@@ -63,6 +66,10 @@ func main() {
 	http.HandleFunc("/api/test", func(w http.ResponseWriter, r *http.Request) {
 		hello := fmt.Sprintf("Hi%sI'm ok", gets(r))
 		w.Write([]byte(hello))
+	})
+
+	http.HandleFunc("/api/lncn", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(lncn()))
 	})
 
 	if *port == -1 {
@@ -183,4 +190,30 @@ func httpRequest(url string) (*http.Response, error) {
 	// Do sends an HTTP request and returns an HTTP response
 	// 发起一个HTTP请求，返回一个HTTP响应
 	return client.Do(request)
+}
+
+func lncn() string {
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Flag("headless", true),
+		chromedp.Flag("disable-gpu", false),
+		chromedp.Flag("enable-automation", false),
+		chromedp.Flag("disable-extensions", false),
+	)
+
+	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancel()
+
+	// create context
+	ctx, cancel := chromedp.NewContext(allocCtx, chromedp.WithLogf(log.Printf))
+	defer cancel()
+	var res string
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(`https://lncn.org/`),
+		chromedp.OuterHTML(`body`, &res, chromedp.NodeVisible, chromedp.ByQuery),
+	); err != nil {
+		log.Fatal(err)
+	}
+
+	return res
 }
