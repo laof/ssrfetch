@@ -193,12 +193,11 @@ func httpRequest(url string) (*http.Response, error) {
 }
 
 func lncn() string {
-	opts := append(chromedp.DefaultExecAllocatorOptions[:],
-		chromedp.Flag("headless", true),
-		chromedp.Flag("disable-gpu", false),
-		chromedp.Flag("enable-automation", false),
-		chromedp.Flag("disable-extensions", false),
-	)
+	opts := append(chromedp.DefaultExecAllocatorOptions[:])
+	// chromedp.Flag("headless", true),
+	// chromedp.Flag("disable-gpu", false),
+	// chromedp.Flag("enable-automation", false),
+	// chromedp.Flag("disable-extensions", false),
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
 	defer cancel()
@@ -206,13 +205,14 @@ func lncn() string {
 	// create context
 	ctx, cancel := chromedp.NewContext(allocCtx, chromedp.WithLogf(log.Printf))
 	defer cancel()
-	var res string
+	var res string = "="
 
-	if err := chromedp.Run(ctx,
+	err := chromedp.Run(ctx,
 		chromedp.Navigate(`https://lncn.org/`),
 		chromedp.OuterHTML(`body`, &res, chromedp.NodeVisible, chromedp.ByQuery),
-	); err != nil {
-		log.Fatal(err)
+	)
+	if err != nil {
+		return "err"
 	}
 
 	return res
