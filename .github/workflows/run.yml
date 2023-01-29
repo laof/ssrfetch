@@ -14,22 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     if: "contains(github.event.head_commit.message, 'cicd:')"
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3.3.0
-
-      - name: Create pdf
-        uses: tj-actions/puppeteer@v4
-        id: puppeteer
+      - uses: actions/checkout@v3
+      - name: Install Dependencies
+        uses: actions/setup-node@v2
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
         with:
-          files: |
-            test/test.js
-
-      - name: Copy pdf
-        uses: tj-actions/docker-cp@v2
+          args: install
+      - name: Test Code
+        uses: mujo-code/puppeteer-headful@16.6.0
+        env:
+          CI: "true"
         with:
-          container: ${{ steps.puppeteer.outputs.container-id }}
-          source: ${{ steps.puppeteer.outputs.home }}/test.pdf
-          destination: test.pdf
+          args: node test/test.js
 
       - name: Submit pdf
         uses: JamesIves/github-pages-deploy-action@v4.3.3
