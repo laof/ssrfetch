@@ -212,7 +212,7 @@ func lncn() string {
 		chromedp.OuterHTML(`body`, &res, chromedp.NodeVisible, chromedp.ByQuery),
 	)
 	if err != nil {
-		return "err"
+		return string(err.Error())
 	}
 
 	return res
