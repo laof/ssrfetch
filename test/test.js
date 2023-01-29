@@ -3,8 +3,7 @@ const fs = require("fs");
 
 (async () => {
   const browser = await puppeteer.launch({
-    headless: false, //有浏览器界面启动
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    headless: false,
   });
   const page = await browser.newPage();
   await page.goto("https://lncn.org", {
