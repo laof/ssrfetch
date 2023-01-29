@@ -33,7 +33,7 @@ jobs:
       - name: Submit pdf
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
-          folder: ${{ steps.puppeteer-test.outputs.home }}
+          folder: test
           target-folder: output
           clean: true
           branch: main
