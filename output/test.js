@@ -9,10 +9,9 @@ const fs = require("fs");
     waitUntil: "networkidle0",
   });
 
-  await page.reload({
-    timeout: 1000 * 30,
-    waitUntil: "networkidle0",
-  });
+  await page.reload();
+
+  await new Promise((ok) => setTimeout(() => ok(true), 1000 * 2));
 
   //   await page.waitForSelector(".ssr-btn-bar button");
   //   const html = await page.content();
