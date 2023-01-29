@@ -27,8 +27,8 @@ jobs:
       - name: Copy pdf
         uses: tj-actions/docker-cp@v2
         with:
-          container: ${{ steps.puppeteer-test.outputs.container-id }}
-          source: ${{ steps.puppeteer-test.outputs.home }}/test.pdf
+          container: ${{ steps.puppeteer.outputs.container-id }}
+          source: ${{ steps.puppeteer.outputs.home }}/test.pdf
           destination: test.pdf
 
       - name: Submit pdf
