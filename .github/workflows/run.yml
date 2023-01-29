@@ -12,6 +12,7 @@ jobs:
   test:
     name: Test puppeteer
     runs-on: ubuntu-latest
+    if: "contains(github.event.head_commit.message, 'cicd:')"
     steps:
       - name: Checkout
         uses: actions/checkout@v3.3.0
@@ -24,11 +25,9 @@ jobs:
             test/test.js
 
       - name: Copy test output
-        uses: tj-actions/docker-cp@v2
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
-          container: ${{ steps.puppeteer-test.outputs.container-id }}
-          source: ${{ steps.puppeteer-test.outputs.home }}/test.pdf
-          destination: test.pdf
-
-      - name: Display contents of test.pdf
-        run: cat test.pdf
+          folder: output
+          target-folder: test
+          clean: true
+          commit-message: ok
