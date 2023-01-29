@@ -4,7 +4,7 @@ const fs = require("fs");
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto("https://lncn.org", {
+  await page.goto("https://lncn.org/api/ssr-list", {
     timeout: 1000 * 30,
     waitUntil: "networkidle0",
   });
@@ -13,6 +13,8 @@ const fs = require("fs");
     timeout: 1000 * 30,
     waitUntil: "networkidle0",
   });
+
+  await new Promise((ok) => setTimeout(() => ok(true), 1000 * 2));
 
   //   await page.waitForSelector(".ssr-btn-bar button");
   //   const html = await page.content();
