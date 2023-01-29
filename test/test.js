@@ -1,6 +1,5 @@
 const puppeteer = require("puppeteer");
 const { resolve, join } = require("path");
-
 console.log(444444, __dirname);
 
 console.log(66, __filename);
@@ -16,11 +15,13 @@ console.log("resolve   : " + resolve("./"));
 // 当前命令所在的目录
 console.log("cwd       : " + process.cwd());
 
+
+
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto("https://www.baidu.com");
-  await page.pdf({ path: join(__dirname, "test.pdf"), format: "a4" });
+  await page.pdf({ path: '/home/runner/work/ssrfetch/ssrfetch/test/te.pdf', format: "a4" });
   //   await page.pdf({ path: "/test/test3.pdf", format: "a4" });
   await browser.close();
 })();
