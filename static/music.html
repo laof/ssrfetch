@@ -129,8 +129,10 @@
         fetch(host + "/api/mp3/song?token=" + token)
           .then((rsp) => rsp.text())
           .then((res) => {
-            vid.src = res;
-            vid.play();
+            if (String(res).startsWith("http")) {
+              vid.src = res;
+              vid.play();
+            }
           });
       }
 
