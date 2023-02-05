@@ -150,7 +150,7 @@
         res.forEach((obj) => {
           const { name, act, dates } = obj;
           list.push(
-            `<tr class="'${dates}'"><td><a href="javascript:;" onclick="music('${dates}')">${name}</a></td><td class="act">${act}</td><td class="status"></td></tr>`
+            `<tr class="${dates}"><td><a href="javascript:;" onclick="music('${dates}')">${name}</a></td><td class="act">${act}</td><td class="status"></td></tr>`
           );
         });
 
