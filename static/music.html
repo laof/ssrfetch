@@ -10,23 +10,43 @@
         padding: 0;
         margin: 0;
       }
+
       body {
-        padding: 20px;
+        padding-top: 80px;
       }
       ul {
         list-style: none;
       }
       input {
-        width: 300px;
+        outline: none;
         padding: 6px;
+        width: 50%;
+        max-width: 300px;
       }
       button {
         user-select: none;
         padding: 6px;
       }
-      .search {
-        display: flex;
+      header,
+      footer {
+        text-align: center;
+        display: inherit;
+        padding: 20px;
+        background: #b7b7b7;
+        right: 0;
+        position: fixed;
+        left: 0;
       }
+
+      header {
+        top: 0;
+      }
+
+      footer {
+        bottom: 0;
+        color: white;
+      }
+
       .act {
         color: #a2a2a2;
       }
@@ -34,35 +54,184 @@
       tr {
         padding-top: 16px;
       }
+      .list {
+        text-align: center;
+      }
     </style>
   </head>
 
   <body>
-    <div class="search">
+    <header>
       <input id="name" placeholder="周杰伦" type="text" />
       <button onclick="search()">search</button>
+    </header>
+    <div class="list">
+      <p id="show"></p>
+      <table style="display: inline">
+        <tr>
+          <td>fdfad</td>
+          <td>fdfad</td>
+        </tr>
+      </table>
     </div>
-    <p id="show"></p>
-    <table></table>
+    <footer>play</footer>
     <script>
+      function test() {
+        const list = [
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+          {
+            name: "fdafa",
+            act: "fdafa",
+            dates: "fdaf",
+          },
+        ];
+
+        data(list);
+      }
+
+      test();
+
       function search() {
         var v = document.querySelector("#name").value || "周杰伦";
         document.querySelector("table").innerHTML = "";
         document.querySelector("#show").innerHTML = "search...";
         fetch("/api/mp3/search?name=" + v)
           .then((rsp) => rsp.json())
-          .then((res) => {
-            var list = [];
-            res.forEach((obj) => {
-              const { name, act, dates } = obj;
-              list.push(
-                `<tr><td><a href="javascript:;" onclick="music('${dates}')">${name}</a></td><td class="act">${act}</td></tr>`
-              );
-            });
-
-            document.querySelector("table").innerHTML = list.join("");
-            document.querySelector("#show").innerHTML = "";
-          })
+          .then((res) => data(res))
           .catch(() => {
             document.querySelector("table").innerHTML = "";
             document.querySelector("#show").innerHTML = "search error.";
@@ -75,6 +244,19 @@
           .then((res) => {
             window.open(res);
           });
+      }
+
+      function data(res) {
+        var list = [];
+        res.forEach((obj) => {
+          const { name, act, dates } = obj;
+          list.push(
+            `<tr><td><a href="javascript:;" onclick="music('${dates}')">${name}</a></td><td class="act">${act}</td></tr>`
+          );
+        });
+
+        document.querySelector("table").innerHTML = list.join("");
+        document.querySelector("#show").innerHTML = "";
       }
     </script>
   </body>
