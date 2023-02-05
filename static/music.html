@@ -125,15 +125,15 @@
           });
       }
 
-      function music(token) {
-        const status = document.querySelector(`.${token} .status`);
+      function music(token, id) {
+        const status = document.querySelector(`#${id}`);
         fetch(host + "/api/mp3/song?token=" + token)
           .then((rsp) => rsp.text())
           .then((res) => {
             if (String(res).startsWith("http")) {
               play(res);
               status.innerHTML = `<a href="javascript:;" onclick="play('${res}')">play</a>`;
-            } else{
+            } else {
               status.innerHTML = `failed`;
             }
           });
@@ -145,12 +145,24 @@
         vid.play();
       }
 
+      function uuid() {
+        return "axxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+          /[xy]/g,
+          function (c) {
+            var r = (Math.random() * 16) | 0,
+              v = c == "x" ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+          }
+        );
+      }
+
       function data(res) {
         var list = [];
         res.forEach((obj) => {
           const { name, act, dates } = obj;
+          const id = uuid();
           list.push(
-            `<tr class="${dates}"><td><a href="javascript:;" onclick="music('${dates}')">${name}</a></td><td class="act">${act}</td><td class="status"></td></tr>`
+            `<tr><td><a href="javascript:;" onclick="music('${dates}','${id}')">${name}</a></td><td class="act">${act}</td><td id="${id}"></td></tr>`
           );
         });
 
