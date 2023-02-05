@@ -127,12 +127,13 @@
 
       function music(token, id) {
         const status = document.querySelector(`#${id}`);
+        status.innerHTML ='loading..'
         fetch(host + "/api/mp3/song?token=" + token)
           .then((rsp) => rsp.text())
           .then((res) => {
             if (String(res).startsWith("http")) {
               play(res);
-              status.innerHTML = `<a href="javascript:;" onclick="play('${res}')">play</a>`;
+              status.innerHTML = `<a href="javascript:;" onclick="play('${res}')">播放</a> &nbsp;&nbsp;&nbsp; <a href="javascript:;" onclick="window.open('${res}')">打开</a>`;
             } else {
               status.innerHTML = `failed`;
             }
