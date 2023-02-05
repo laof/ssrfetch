@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>music</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        padding: 20px;
+      }
+      ul {
+        list-style: none;
+      }
+      input {
+        width: 300px;
+        padding: 6px;
+      }
+      button {
+        user-select: none;
+        padding: 6px;
+      }
+      .search {
+        display: flex;
+      }
+      .act {
+        color: #a2a2a2;
+      }
+      td,
+      tr {
+        padding-top: 16px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="search">
+      <input id="name" placeholder="周杰伦" type="text" />
+      <button onclick="search()">search</button>
+    </div>
+    <p id="show"></p>
+    <table></table>
+    <script>
+      function search() {
+        var v = document.querySelector("#name").value || "周杰伦";
+        document.querySelector("table").innerHTML = "";
+        document.querySelector("#show").innerHTML = "search...";
+        fetch("/api/mp3/search?name=" + v)
+          .then((rsp) => rsp.json())
+          .then((res) => {
+            var list = [];
+            res.forEach((obj) => {
+              const { name, act, dates } = obj;
+              list.push(
+                `<tr><td><a href="javascript:;" onclick="music('${dates}')">${name}</a></td><td class="act">${act}</td></tr>`
+              );
+            });
+
+            document.querySelector("table").innerHTML = list.join("");
+            document.querySelector("#show").innerHTML = "";
+          })
+          .catch(() => {
+            document.querySelector("table").innerHTML = "";
+            document.querySelector("#show").innerHTML = "search error.";
+          });
+      }
+
+      function music(token) {
+        fetch("/api/mp3/music?token=" + token)
+          .then((rsp) => rsp.text())
+          .then((res) => {
+            window.open(res);
+          });
+      }
+    </script>
+  </body>
+</html>

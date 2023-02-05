@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	tool "fetch"
 	"flag"
 	"fmt"
@@ -10,8 +12,11 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/apex/gateway"
 	"github.com/chromedp/chromedp"
 )
@@ -32,6 +37,20 @@ func main() {
 	port := flag.Int("port", -1, "localhost port")
 
 	flag.Parse()
+
+	http.HandleFunc("/api/mp3/search", func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query()
+		name := query.Get("name")
+		list := search(name)
+		a, _ := json.Marshal(list)
+		w.Write(a)
+	})
+	// api/music?token=
+	http.HandleFunc("/api/mp3/song", func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query()
+		token := query.Get("token")
+		w.Write([]byte(gomusic(token)))
+	})
 
 	http.HandleFunc("/api/goto", func(w http.ResponseWriter, r *http.Request) {
 		str := strings.Replace(r.RequestURI, "/api/goto?s=", "", 1)
@@ -216,4 +235,162 @@ func lncn() string {
 	}
 
 	return res
+}
+
+type Music struct {
+	Name  string `json:"name"`
+	Dates string `json:"dates"`
+	Act   string `json:"act"`
+}
+
+func dec(str string) string {
+	str = strings.ReplaceAll(str, "&amp;", "&")
+	str = strings.ReplaceAll(str, "&nbsp;", " ")
+	return str
+}
+
+func search(name string) []Music {
+	var list []Music
+
+	res, err := http.Get("https://www.musicenc.com/?search=" + name)
+
+	if err != nil {
+		return list
+	}
+
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Find the review items
+	doc.Find(".list li").Each(func(i int, s *goquery.Selection) {
+		// For each item found, get the title
+		name := s.Find("a").Text()
+		name = dec(name)
+
+		act := s.Find("span").Text()
+		act = dec(act)
+
+		dates, ok := s.Find("a").Attr("dates")
+
+		if ok {
+			m := Music{Name: name, Act: act, Dates: dates}
+			list = append(list, m)
+		}
+
+	})
+
+	return list
+
+}
+
+func gomusic(token string) string {
+	res, err := http.Get("https://www.musicenc.com/searchr/?token=" + token)
+
+	if err != nil {
+		return ""
+	}
+
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+
+	if err != nil {
+		return ""
+	}
+
+	var href string
+	doc.Find(".downBu.secm3").Each(func(i int, s *goquery.Selection) {
+		value, ok := s.Attr("href")
+		if ok {
+			href = value
+		}
+	})
+
+	if strings.HasPrefix(href, "http") { // 我可以抱你吗
+		return pics(href)
+	}
+
+	if strings.HasPrefix(href, "javascript:") { // 晴天
+		return javascript(href)
+	}
+
+	return ""
+}
+
+// <script>var imgs="XJlcw==",lr="548323",pics="aHR0cHM6Ly9saW5rLm11c2ljZW5jLmNvbS8xNjMvP3NpZD0xNjc1ODAwMjI2JnRpbWU9MTY3NTU5MTc2NA==",sces="",domtitle="我可以抱你吗-MusicEnc",lrc="aHR0cHM6Ly93d3cubXVzaWNlbmMuY29tLzE2My8/cj0=",tl="";</script>
+func pics(url string) string {
+	var s = strconv.FormatInt(time.Now().UnixMilli(), 10)
+	res, err := http.Get(url)
+
+	if err != nil {
+		return ""
+	}
+
+	defer res.Body.Close()
+
+	doc, ok := io.ReadAll(res.Body)
+
+	if ok != nil {
+		return ""
+	}
+
+	str := string(doc)
+	str = strings.ReplaceAll(str, "\"", s)
+	str = strings.ReplaceAll(str, "'", s)
+
+	a := strings.Split(str, "pics="+s)[1]
+	value := strings.Split(a, s)[0]
+
+	if value != "" {
+		return download(value)
+	}
+
+	return ""
+}
+
+// 1,aHR0cHM6Ly9saW5rLm11c2ljZW5jLmNvbS8xNjMvP3NpZD0xNjc1ODAwMjI2JnRpbWU9MTY3NTU5MTc2NA==
+// 2,https://link.musicenc.com/163/?sid=1675800226&time=1675591764
+// 3,https://win-web-nf01-sycdn.kuwo.cn/6f14df20608f27fbd76a13f6f4aa6d16/63df8569/resource/n1/71/5/2472379884.mp3
+func download(str string) string {
+	url, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		return ""
+	}
+	res, err := http.Get(string(url))
+	if err != nil {
+		return ""
+	}
+	defer res.Body.Close()
+	mp3, e := io.ReadAll(res.Body)
+	if e != nil {
+		return ""
+	}
+	return string(mp3)
+}
+
+// 1,javascript:tps('aHR0cHM6Ly9hbnRpc2VydmVyLmt1d28uY24vYW50aS5zP2Zvcm1hdD1tcDN8YWFjJnJpZD0xMTg5ODAmYnI9MzIwa21wMyZ0eXBlPWNvbnZlcnRfdXJsJnJlc3BvbnNlPXJlcw==');
+// 2,aHR0cHM6Ly9hbnRpc2VydmVyLmt1d28uY24vYW50aS5zP2Zvcm1hdD1tcDN8YWFjJnJpZD0xMTg5ODAmYnI9MzIwa21wMyZ0eXBlPWNvbnZlcnRfdXJsJnJlc3BvbnNlPXJlcw==
+// 3,https://antiserver.kuwo.cn/anti.s?format=mp3|aac&rid=118980&br=320kmp3&type=convert_url&response=res
+// 4,location url
+
+func javascript(str string) string {
+	str = strings.Split(strings.Split(str, "'")[1], "'")[0]
+	url, _ := base64.StdEncoding.DecodeString(str)
+	m := string(url)
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+
+	res, err := client.Get(m)
+	if err != nil {
+		return ""
+	}
+	var l = res.Header.Get("Location")
+	return l
 }
