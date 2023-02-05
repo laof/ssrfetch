@@ -48,7 +48,7 @@
       }
 
       td a {
-        margin-right: 20px;
+        margin-right: 14px;
         color: #ff8d6b;
       }
 
@@ -133,7 +133,7 @@
           .then((res) => {
             if (String(res).startsWith("http")) {
               play(res);
-              status.innerHTML = `<a href="javascript:;" onclick="play('${res}')">播放</a>&nbsp;<a href="javascript:;" onclick="window.open('${res}')">打开</a>`;
+              status.innerHTML = `<a href="javascript:;" onclick="play('${res}')">播放</a><a href="javascript:;" onclick="window.open('${res}')">打开</a>`;
             } else {
               status.innerHTML = `failed`;
             }
