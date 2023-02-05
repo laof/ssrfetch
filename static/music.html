@@ -12,8 +12,7 @@
       }
 
       body {
-        padding-top: 52px;
-        padding-bottom: 40px;
+        background: whitesmoke;
       }
       ul {
         list-style: none;
@@ -64,7 +63,12 @@
       }
       .list {
         text-align: center;
-        padding-bottom: 36px;
+        width: 80%;
+        margin: auto;
+        background: white;
+        border-left: 1px solid #e1e1e1;
+        border-right: 1px solid #e1e1e1;
+        padding: 56px 10px 82px 10px;
       }
       img {
         width: 26px;
@@ -74,7 +78,12 @@
 
   <body>
     <header>
-      <input id="name" placeholder="周杰伦" type="text" />
+      <input
+        onkeydown="key(event)"
+        id="name"
+        placeholder="周杰伦"
+        type="text"
+      />
       <button onclick="search()">search</button>
     </header>
     <div class="list">
@@ -96,6 +105,12 @@
         location.hostname === "localhost" ? "http://localhost:5678" : "";
 
       var vid = document.querySelector("audio");
+
+      function key(event) {
+        if (event.keyCode == 13) {
+          search();
+        }
+      }
 
       function search() {
         var v = document.querySelector("#name").value || "周杰伦";
