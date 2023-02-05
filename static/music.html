@@ -70,7 +70,7 @@
       }
 
       function music(token) {
-        fetch("/api/mp3/music?token=" + token)
+        fetch("/api/mp3/song?token=" + token)
           .then((rsp) => rsp.text())
           .then((res) => {
             window.open(res);
