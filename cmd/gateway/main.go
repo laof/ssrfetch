@@ -18,7 +18,9 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/apex/gateway"
+	"github.com/bitly/go-simplejson"
 	"github.com/chromedp/chromedp"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 func gets(r *http.Request) string {
@@ -30,6 +32,13 @@ func gets(r *http.Request) string {
 	}
 
 	return s
+}
+
+func getPar(req *http.Request) map[string]string {
+	decoder := json.NewDecoder(req.Body)
+	var params map[string]string
+	decoder.Decode(&params)
+	return params
 }
 
 func main() {
@@ -74,6 +83,16 @@ func main() {
 
 		w.Write(data)
 
+	})
+
+	http.HandleFunc("/api/signed", func(w http.ResponseWriter, r *http.Request) {
+		params := getPar(r)
+		data, err := createSigned(params["privateKey"], params["json"])
+		if err == nil {
+			w.Write([]byte(data))
+		} else {
+			w.Write([]byte(""))
+		}
 	})
 
 	http.HandleFunc("/api/get", func(w http.ResponseWriter, r *http.Request) {
@@ -393,4 +412,40 @@ func javascript(str string) string {
 	}
 	var l = res.Header.Get("Location")
 	return l
+}
+
+/*
+CreateSigned test
+*/
+func createSigned(key, jsonstr string) (tokenStr string, err error) {
+
+	js, err := simplejson.NewJson([]byte(jsonstr))
+
+	if err != nil {
+		return "", err
+	}
+
+	maping, err := js.Map()
+
+	if err != nil {
+		return "", err
+	}
+
+	jsonmap := jwt.MapClaims{
+		"timestamp": time.Now().Add(time.Hour*24).UnixNano() / 1e6,
+	}
+
+	for k := range maping {
+		jsonmap[k] = maping[k]
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jsonmap)
+
+	token.Header = map[string]interface{}{
+		"kid": "AWS",
+		"alg": jwt.SigningMethodRS256.Alg(),
+	}
+	privateKey, _ := jwt.ParseRSAPrivateKeyFromPEM([]byte(key))
+
+	return token.SignedString(privateKey)
 }
