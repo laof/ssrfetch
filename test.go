@@ -16,6 +16,14 @@ type yamlData struct {
 	Value string
 }
 
+func getPar(req *http.Request) map[string]string {
+	decoder := json.NewDecoder(req.Body)
+	var params map[string]string
+	decoder.Decode(&params)
+	return params
+}
+	params := getPar(req)
+params["json"]
 /*
 CreateSigned test
 */
